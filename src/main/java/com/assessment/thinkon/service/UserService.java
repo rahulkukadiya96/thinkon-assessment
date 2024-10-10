@@ -10,6 +10,7 @@ import com.assessment.thinkon.utils.ResponseUtils;
 import com.assessment.thinkon.utils.UserValidationUtils;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -56,17 +58,21 @@ public class UserService {
      * @return response with message
      */
     public ResponseEntity<ResponseBody> createUser(UserData userData) throws InvalidDataException {
+        log.debug("Create User Method is called");
         userValidationUtils.validateUserRequest(userData);
 
         if (userRepository.existsByUserNameAndDeleteFlag(userData.getUsername(), NO)) {
+            log.info("User is already existed with given user name", userData.getUsername());
             return responseUtils.buildResponseEntity(USER_EXISTED_ERROR_MESSAGE, CONFLICT);
         }
 
         User user = userData.toUser();
         user = userRepository.save(user);
         if (user.getId() > 0) {
+            log.info("User with id {} was created", user.getId());
             return responseUtils.buildResponseEntity(USER_CREATED_SUCCESSFULLY, CREATED);
         }
+        log.error("User data is not able to save into the database");
         return responseUtils.buildResponseEntity(REQUEST_FAILED, INTERNAL_SERVER_ERROR);
     }
 
@@ -78,6 +84,7 @@ public class UserService {
     public ResponseEntity<ResponseBody> fetchUserList() {
         List<UserData> userDataList = userRepository.findByDeleteFlag(NO).stream().map(UserProjection::toUserData).toList();
         if (userDataList.isEmpty()) {
+            log.debug("No users into the database");
             return responseUtils.buildResponseEntity(USER_NOT_FOUND, NOT_FOUND);
         }
         return responseUtils.buildResponseEntity(SUCCESS, OK, userDataList);
@@ -91,6 +98,7 @@ public class UserService {
     public ResponseEntity<ResponseBody> fetchUserById(long id) {
         Optional<UserProjection> userDataOptional = userRepository.findByIdAndDeleteFlag(id, NO, UserProjection.class);
         if (userDataOptional.isEmpty()) {
+            log.debug("No user found into the database for given id", id);
             return responseUtils.buildResponseEntity(USER_NOT_FOUND, NOT_FOUND);
         }
         return responseUtils.buildResponseEntity(SUCCESS, OK, userDataOptional.map(UserProjection::toUserData));
@@ -105,6 +113,7 @@ public class UserService {
     public ResponseEntity<ResponseBody> deleteUserById(long id) {
         Optional<User> userOptional = userRepository.findByIdAndDeleteFlag(id, NO, User.class);
         if (userOptional.isEmpty()) {
+            log.debug("No user found into the database for given id", id);
             return responseUtils.buildResponseEntity(USER_NOT_FOUND, NOT_FOUND);
         }
         User user = userOptional.get();
@@ -121,6 +130,7 @@ public class UserService {
         // Check if user exists
         Optional<User> userOptional = userRepository.findByIdAndDeleteFlag(id, NO, User.class);
         if (userOptional.isEmpty()) {
+            log.debug("No user found into the database for given id", id);
             return responseUtils.buildResponseEntity(USER_NOT_FOUND, NOT_FOUND);
         }
 
@@ -138,7 +148,7 @@ public class UserService {
         user.setLastName(userData.getLastName());
         user.setFirstName(userData.getFirstName());
         userRepository.save(user);
-
+        log.info("User is successfully updated");
         // Return success response
         return responseUtils.buildResponseEntity(USER_UPDATED_SUCCESSFULLY, OK);
     }
