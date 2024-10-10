@@ -63,7 +63,7 @@ public class UserService {
         }
 
         User user = userData.toUser();
-        userRepository.save(user);
+        user = userRepository.save(user);
         if (user.getId() > 0) {
             return responseUtils.buildResponseEntity(USER_CREATED_SUCCESSFULLY, CREATED);
         }
@@ -132,6 +132,7 @@ public class UserService {
         // Update the user data
         User user = userData.toUser();
         user.setUserName(userData.getUsername());
+        user.setId(id);
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
         user.setLastName(userData.getLastName());
