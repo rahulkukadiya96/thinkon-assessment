@@ -1,6 +1,5 @@
 package com.assessment.thinkon.service;
 
-import com.assessment.thinkon.constants.Messages;
 import com.assessment.thinkon.exception.InvalidDataException;
 import com.assessment.thinkon.model.User;
 import com.assessment.thinkon.pojo.ResponseBody;
@@ -13,17 +12,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 
+import static com.assessment.thinkon.constants.Messages.REQUEST_FAILED;
+import static com.assessment.thinkon.constants.Messages.USER_CREATED_SUCCESSFULLY;
+import static com.assessment.thinkon.constants.Messages.USER_EXISTED_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -52,16 +56,16 @@ public class UserServiceTest {
         // Mocking repository and utils behavior
         doNothing().when(userValidationUtils).validateUserRequest(userData);
         when(userRepository.existsByUserNameAndDeleteFlag("testuser", 0)).thenReturn(false);
-        when(userRepository.save(Mockito.any(User.class))).thenReturn(getValidUser());
-        when(responseUtils.buildResponseEntity(Messages.USER_CREATED_SUCCESSFULLY, HttpStatus.CREATED))
-                .thenReturn(new ResponseEntity<>(new ResponseBody<>(Messages.USER_CREATED_SUCCESSFULLY, Collections.emptyList()), HttpStatus.CREATED));
+        when(userRepository.save(any(User.class))).thenReturn(getValidUser());
+        when(responseUtils.buildResponseEntity(USER_CREATED_SUCCESSFULLY, HttpStatus.CREATED))
+                .thenReturn(new ResponseEntity<>(new ResponseBody<>(USER_CREATED_SUCCESSFULLY, Collections.emptyList()), HttpStatus.CREATED));
 
         // Call the service method
         ResponseEntity<ResponseBody> response = userService.createUser(userData);
 
         // Verify the interactions and assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(Messages.USER_CREATED_SUCCESSFULLY, response.getBody().getMessage());
+        assertEquals(USER_CREATED_SUCCESSFULLY, response.getBody().getMessage());
     }
 
     @Test
@@ -72,15 +76,15 @@ public class UserServiceTest {
         // Mocking repository and utils behavior
         doNothing().when(userValidationUtils).validateUserRequest(userData);
         when(userRepository.existsByUserNameAndDeleteFlag("testuser", 0)).thenReturn(true);
-        when(responseUtils.buildResponseEntity(Messages.USER_EXISTED_ERROR_MESSAGE, HttpStatus.CONFLICT))
-                .thenReturn(new ResponseEntity<>(new ResponseBody<>(Messages.USER_EXISTED_ERROR_MESSAGE, Collections.emptyList()), HttpStatus.CONFLICT));
+        when(responseUtils.buildResponseEntity(USER_EXISTED_ERROR_MESSAGE, CONFLICT))
+                .thenReturn(new ResponseEntity<>(new ResponseBody<>(USER_EXISTED_ERROR_MESSAGE, Collections.emptyList()), CONFLICT));
 
         // Call the service method
         ResponseEntity<ResponseBody> response = userService.createUser(userData);
 
         // Verify the interactions and assert
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals(Messages.USER_EXISTED_ERROR_MESSAGE, response.getBody().getMessage());
+        assertEquals(CONFLICT, response.getStatusCode());
+        assertEquals(USER_EXISTED_ERROR_MESSAGE, response.getBody().getMessage());
     }
 
     @Test
@@ -93,16 +97,16 @@ public class UserServiceTest {
         when(userRepository.existsByUserNameAndDeleteFlag("testuser", 0)).thenReturn(false);
         User user = getValidUser();
         user.setId(0);
-        when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
-        when(responseUtils.buildResponseEntity(Messages.REQUEST_FAILED, HttpStatus.INTERNAL_SERVER_ERROR))
-                .thenReturn(new ResponseEntity<>(new ResponseBody<>(Messages.REQUEST_FAILED, Collections.emptyList()), HttpStatus.INTERNAL_SERVER_ERROR));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(responseUtils.buildResponseEntity(REQUEST_FAILED, INTERNAL_SERVER_ERROR))
+                .thenReturn(new ResponseEntity<>(new ResponseBody<>(REQUEST_FAILED, Collections.emptyList()), INTERNAL_SERVER_ERROR));
 
         // Call the service method
         ResponseEntity<ResponseBody> response = userService.createUser(userData);
 
         // Verify the interactions and assert
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals(Messages.REQUEST_FAILED, response.getBody().getMessage());
+        assertEquals(INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(REQUEST_FAILED, response.getBody().getMessage());
     }
 
     public User getValidUser() {
