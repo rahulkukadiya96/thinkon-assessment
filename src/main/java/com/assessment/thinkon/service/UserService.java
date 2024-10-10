@@ -17,15 +17,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.assessment.thinkon.Constants.AppConstants.NO;
-import static com.assessment.thinkon.Constants.AppConstants.YES;
-import static com.assessment.thinkon.Constants.Messages.REQUEST_FAILED;
-import static com.assessment.thinkon.Constants.Messages.SUCCESS;
-import static com.assessment.thinkon.Constants.Messages.USER_CREATED_SUCCESSFULLY;
-import static com.assessment.thinkon.Constants.Messages.USER_DELETED_SUCCESSFULLY;
-import static com.assessment.thinkon.Constants.Messages.USER_EXISTED_ERROR_MESSAGE;
-import static com.assessment.thinkon.Constants.Messages.USER_NOT_FOUND;
-import static com.assessment.thinkon.Constants.Messages.USER_UPDATED_SUCCESSFULLY;
+import static com.assessment.thinkon.constants.AppConstants.NO;
+import static com.assessment.thinkon.constants.AppConstants.YES;
+import static com.assessment.thinkon.constants.Messages.REQUEST_FAILED;
+import static com.assessment.thinkon.constants.Messages.SUCCESS;
+import static com.assessment.thinkon.constants.Messages.USER_CREATED_SUCCESSFULLY;
+import static com.assessment.thinkon.constants.Messages.USER_DELETED_SUCCESSFULLY;
+import static com.assessment.thinkon.constants.Messages.USER_EXISTED_ERROR_MESSAGE;
+import static com.assessment.thinkon.constants.Messages.USER_NOT_FOUND;
+import static com.assessment.thinkon.constants.Messages.USER_UPDATED_SUCCESSFULLY;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -63,7 +63,7 @@ public class UserService {
         }
 
         User user = userData.toUser();
-        userRepository.save(user);
+        user = userRepository.save(user);
         if (user.getId() > 0) {
             return responseUtils.buildResponseEntity(USER_CREATED_SUCCESSFULLY, CREATED);
         }
@@ -132,6 +132,7 @@ public class UserService {
         // Update the user data
         User user = userData.toUser();
         user.setUserName(userData.getUsername());
+        user.setId(id);
         user.setEmail(userData.getEmail());
         user.setPhoneNumber(userData.getPhoneNumber());
         user.setLastName(userData.getLastName());

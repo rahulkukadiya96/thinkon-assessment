@@ -1,5 +1,8 @@
-package com.assessment.thinkon.Constants;
+package com.assessment.thinkon.constants;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Messages {
     public static final String USER_EXISTED_ERROR_MESSAGE = "Username is already existed";
 

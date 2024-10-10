@@ -44,8 +44,12 @@ The following endpoints are available:
   `POST /users`  
   Creates a new user with the provided details.
 
-- **Retrieve a User**:  
-  `GET /users/{id}`  
+- **Retrieve User List**:
+- `GET /users/`  
+  Retrieves the details of all user.
+
+- **Retrieve a User**:
+- `GET /users/{id}`  
   Retrieves the details of a user with the given ID.
 
 - **Update a User**:  
@@ -69,4 +73,5 @@ The following endpoints are available:
 ```
 ## Assumptions
 * I have implemented basic validation for all user-related fields, including first name, last name, username, email, and phone number.
-* 
+* I implemented a soft delete operation to remove the user from the database by setting the delete flag to 1 upon deletion.
+* Due to time constraints, I was only able to write one JUnit test case. However, I do have experience and knowledge in writing both integration and endpoint test cases as well.
