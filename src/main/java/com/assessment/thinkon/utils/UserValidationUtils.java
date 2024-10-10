@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import static com.assessment.thinkon.Constants.Messages.EMAIL_NOT_VALID;
-import static com.assessment.thinkon.Constants.Messages.FIRST_NAME_NOT_VALID;
-import static com.assessment.thinkon.Constants.Messages.LAST_NAME_NOT_VALID;
-import static com.assessment.thinkon.Constants.Messages.PHONE_NUMBER_NOT_VALID;
-import static com.assessment.thinkon.Constants.Messages.USER_NAME_NOT_VALID;
+import static com.assessment.thinkon.constants.Messages.EMAIL_NOT_VALID;
+import static com.assessment.thinkon.constants.Messages.FIRST_NAME_NOT_VALID;
+import static com.assessment.thinkon.constants.Messages.LAST_NAME_NOT_VALID;
+import static com.assessment.thinkon.constants.Messages.PHONE_NUMBER_NOT_VALID;
+import static com.assessment.thinkon.constants.Messages.USER_NAME_NOT_VALID;
 import static java.util.Optional.ofNullable;
 
+/**
+ * This class is responsible for validating user data.
+ *
+ */
 @Component
 public class UserValidationUtils {
     private static final int DEFAULT_TEXT_MAX_CHAR = 50;

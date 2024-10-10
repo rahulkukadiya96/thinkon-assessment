@@ -69,4 +69,4 @@ The following endpoints are available:
 ```
 ## Assumptions
 * I have implemented basic validation for all user-related fields, including first name, last name, username, email, and phone number.
-* 
+* I implemented a soft delete operation to remove the user from the database by setting the delete flag to 1 upon deletion.

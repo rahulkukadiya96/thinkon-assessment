@@ -1,4 +1,4 @@
-package com.assessment.thinkon.Constants;
+package com.assessment.thinkon.constants;
 
 public class AppConstants {
     public static final int YES = 1;
